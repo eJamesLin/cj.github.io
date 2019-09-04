@@ -3,7 +3,7 @@ layout: post
 title:  "Hello World"
 date:   2019-09-03 13:00:00 +0800
 ---
-新 Blog 開張 :p
+Blog 連載再開 :p
 
 一直想從 [http://cj-lin.logdown.com](http://cj-lin.logdown.com) 搬家出來，
 作為一個支援 Markdown 且易於使用的 Blog 來說，logdown 在當時的確算是滿順手的，奈何後來已經停止更新了。

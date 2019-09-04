@@ -7,6 +7,8 @@ date:   2014-08-15 15:24:00 +0800
 Set up physics relating animatable objects and let them run until they resolve to stasis
 Easily possible to set it up so that stasis never occurs, but that could be performance problem
 
+<!--more-->
+
 ```objc
 //Create a UIDynamicAnimator
 UIDynamicAnimator *animator = [[UIDynamicAnimator alloc] initWithReferenceView:aView];
