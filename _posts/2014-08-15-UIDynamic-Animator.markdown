@@ -2,6 +2,7 @@
 layout: post
 title:  UIDynamic Animator
 date:   2014-08-15 15:24:00 +0800
+tags:   [iOS, Objective-C]
 ---
 
 Set up physics relating animatable objects and let them run until they resolve to stasis

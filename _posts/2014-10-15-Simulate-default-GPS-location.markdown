@@ -2,6 +2,7 @@
 layout: post
 title:  Simulate default GPS location
 date:   2014-10-15 00:22:00 +0800
+tags:   [iOS]
 ---
 
 Product -> Scheme -> Edit Scheme ...-> Run -> Options -> Default Location
