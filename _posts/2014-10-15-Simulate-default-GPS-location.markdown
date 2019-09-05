@@ -7,4 +7,4 @@ tags:   [iOS]
 
 Product -> Scheme -> Edit Scheme ...-> Run -> Options -> Default Location
 
-![Simulate default GPS location](https://ejameslin.github.io/assets/2014/simulate-default-gps-location.png)
+![Simulate default GPS location](/assets/2014/simulate-default-gps-location.png)
