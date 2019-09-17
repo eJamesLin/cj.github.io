@@ -17,7 +17,12 @@ struct ContentView: View {
 }
 ```
 
-即使加上了這個保護，但卻在 iOS 12 的實機遇到了 Crash，
+即使加上了這個保護，但卻在 iOS 12 的實機遇到了 Crash。
+
+> dyld: Library not loaded: /System/Library/Frameworks/SwiftUI.framework/SwiftUI
+>
+> Reason: image not found
+
 查了以後才知道這是個已列在 Release Notes 的問題。
 
 解法為加上 `-weak_framework SwiftUI` flag to the `Other Linker Flags` setting in the `Build Settings` tab。
