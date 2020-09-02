@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  Flutter Plugins Ordering Issue and Solution
-date:   2020-09-02 +2100
+date:   2020-09-03 +0034
 tags:   [iOS, Flutter]
 ---
 
@@ -13,7 +13,7 @@ Android 及 iOS 的 Flutter 來自同一個 Engine，所以同樣都有載入順
 ### Issue Intro
 iOS 上，其中一個處理從外部呼叫 App 的 callback function 是 [application(_:open:options:)](https://developer.apple.com/documentation/uikit/uiapplicationdelegate/1623112-application)。
 
-可能的實作如下：
+常見的實作如下：
 
 ```swift
 // sample code
@@ -203,3 +203,7 @@ List<Plugin> findPlugins(FlutterProject project) {
 因為無法固定 plugin 的順序，所以每次重新 run project，在相同的 input 下，有可能會因為不同的 plugin 載入順序，而產生不同的結果。
 
 ### Solution
+- 寫了一個簡短地 script，在 Xcode compile 前，幫忙排序及指定 `GeneratedPluginRegistrant.m` 裡面的 plugin 註冊順序。
+- 程式碼在 github：<https://github.com/eJamesLin/FlutterPluginSort>
+- 跑完之後，把 `GeneratedPluginRegistrant.m` 也加入 `git` version-control 裡面即可
+- 如果官方已有更新，或各位有更建議的解法，非常歡迎提醒我囉，感謝~
