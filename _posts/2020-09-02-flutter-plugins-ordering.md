@@ -33,8 +33,11 @@ func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpe
 一個呼叫 App 起來的 url，只會屬於一種情況。通常會在處理完登入及特殊的 deeplink (ex: FirebaseDynamicLinks) 之後，才使用 App 內的 Router 來呈現這個 url。
 此時 code 的順序有其必要，把呈現 url 放在最後。
 
+
 而在 Flutter 中，plugin 會實作 FlutterPlugin 的 protocol [registerWithRegistrar:registrar](https://github.com/flutter/flutter/blob/856a90e67c9284124d44d2be6c785bacd3a1c772/packages/flutter_tools/templates/plugin/ios-swift.tmpl/Classes/pluginClass.m.tmpl)。
-在其中，plugin 跟 Flutter 使用 `addApplicationDelegate:` 註冊，聲明自己也要處理 `UIApplicationDelegate` 的呼叫。
+在其中，plugin 跟 Flutter 使用 `addApplicationDelegate:` 註冊，聲明自己要處理 `UIApplicationDelegate` 的呼叫。此時若多個 plugin 都有聲明，則這個順序是如何被決定的呢？
+
+<!--more-->
 
 Firebase Dynamic Links 的實作如下
 
@@ -82,8 +85,6 @@ Firebase Dynamic Links 的實作如下
 此時，同時有多個 plugin 跟 flutter 註冊要處理 UIApplicationDelegate，此時就會發生執行順序上的問題。很有可能 Firebase Dynamic Links 會無法被呼叫到，被其他 plugin 先攔截走，而沒有成功解析 Dynamic Links。又或許是登入的 url 被攔截走，而造成無法登入的問題。
 實際跑了幾次後發現，這個執行順序是不固定的。
 那要如何能保證 `Login` 以及 `Firebase Dynamic Links` 的執行順序在 `uni_links` 之前呢？
-
-<!--more-->
 
 ### Dive into Flutter Source Code
 在 Flutter 的 Objective-C++ code 中，對於處理 incoming link 的 `applicationURL:openURL:options` 處理如下：
