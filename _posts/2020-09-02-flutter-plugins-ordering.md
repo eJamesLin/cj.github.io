@@ -3,6 +3,7 @@ layout: post
 title:  Flutter Plugins Ordering Issue and Solution
 date:   2020-09-03 +0034
 tags:   [iOS, Flutter]
+image:  https://ejameslin.github.io/assets/2020/flutter.jpg
 ---
 
 ### About
