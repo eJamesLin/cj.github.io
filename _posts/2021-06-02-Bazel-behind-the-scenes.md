@@ -5,7 +5,9 @@ date:   2021-06-02 +0800
 tags:   [iOS, Bazel]
 ---
 
-To take a closer look at how Bazel works, we could view the log.
+### Show Bazel logs
+
+Turn on bazel logs, we could take a closer look at how Bazel works, and do some analysis.
 
 Here are some options to turn on the logs.
 
@@ -58,7 +60,9 @@ cmd: file -b local_cache/cas/56/56e6bf92857ae12933140664180b6eaeec8d98dd43565b82
 out: Mach-O 64-bit object x86_64
 ```
 
-From WWDC, the xcode build process could roughly split into compiling, processing, linking.
+### Xcode Build Process
+
+From WWDC 2018 video, the xcode build process could roughly split into compiling, processing, linking.
 
 ![](/assets/2021/tasks.png)
 
@@ -69,3 +73,16 @@ The linker links .o files together
 ![](/assets/2021/linker.png)
 
 So theoretical speaking, since compiling and linking output are all accessible from remote cache, the build time now depens on the network speed now.
+
+### Remote Cache vs Network Speed
+
+We could do a simple math, to roughly estimate the remote cache size under different network speed.
+Given a huge application, say the cache files are around 5GB.
+
+| Speed     | Calculation            | Download time  |
+| --------- | -----------------------| -------------- |
+| 10   Mbps | 5 * 1024 / (10   / 8)  | 4096s  (68m)   |
+| 50   Mbps | 5 * 1024 / (50   / 8)  | 819.2  (13m)   |
+| 100  Mbps | 5 * 1024 / (100  / 8)  | 409.6s (6.8m)  |
+| 1000 Mbps | 5 * 1024 / (1000 / 8)  | 40.96s (0.68m) |
+
