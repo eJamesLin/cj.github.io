@@ -86,3 +86,16 @@ Given a huge application, say the cache files are around 5GB.
 | 100  Mbps | 5 * 1024 / (100  / 8)  | 409.6s (6.8m)  |
 | 1000 Mbps | 5 * 1024 / (1000 / 8)  | 40.96s (0.68m) |
 
+Thus network speed has important impact on the cache strategy.
+
+https://github.com/bazelbuild/bazel/pull/7512
+> his PR adds the ability to enable disk and HTTP cache simultaneously. Specifically, if you set
+> ```
+> build --remote_http_cache=http://some.remote.cache
+> build --disk_cache=/some/disk/cache
+> ```
+> Then Bazel will look for cached items in the disk cache first. If an item is not found in the disk cache, it will be looked up in the HTTP cache. If it is found there, it will be copied into the disk cache. On put, Bazel will store items in both the disk and the HTTP cache.
+
+https://github.com/bazelbuild/bazel/issues/7664
+> Suggestion
+> Perhaps the HTTP cache should record the time it took to build an artefact (according to the client). This would give Bazel enough information to decide if it is better to build or fetch.
