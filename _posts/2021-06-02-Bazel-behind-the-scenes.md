@@ -77,14 +77,16 @@ So theoretical speaking, since compiling and linking output are all accessible f
 ### Remote Cache vs Network Speed
 
 We could do a simple math, to roughly estimate the remote cache size under different network speed.
-Given a huge application, say the cache files are around 5GB.
+Given a huge application, say the cache files are around 3GB.
 
-| Speed     | Calculation            | Download time  |
-| --------- | -----------------------| -------------- |
-| 10   Mbps | 5 * 1024 / (10   / 8)  | 4096s  (68m)   |
-| 50   Mbps | 5 * 1024 / (50   / 8)  | 819.2  (13m)   |
-| 100  Mbps | 5 * 1024 / (100  / 8)  | 409.6s (6.8m)  |
-| 1000 Mbps | 5 * 1024 / (1000 / 8)  | 40.96s (0.68m) |
+| Speed     | Calculation            | Download time   |
+| --------- | -----------------------| --------------- |
+| 10   Mbps | 3 * 1024 / (10   / 8)  | 2457s   (41m)   |
+| 30   Mbps | 3 * 1024 / (30   / 8)  | 819s    (13.65m)|
+| 50   Mbps | 3 * 1024 / (50   / 8)  | 491s    (8.192m)|
+| 100  Mbps | 3 * 1024 / (100  / 8)  | 245.76s (4m)    |
+| 1000 Mbps | 3 * 1024 / (1000 / 8)  | 24.576s (0.4m)  |
+
 
 Thus network speed has important impact on the cache strategy.
 
