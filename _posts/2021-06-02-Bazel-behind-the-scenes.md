@@ -21,7 +21,7 @@ Log the executed spawns into this file as delimited Spawn protos.
 Log the executed spawns into this file as json representation of the delimited Spawn protos.
 
 
-Here I recommend to use following settings.
+Let's try the following command.
 ```
 bazel build //BazelDemo --disk_cache=./local_cache --execution_log_json_file=./json.log
 ```
@@ -36,6 +36,22 @@ So the folder will also have 2 sub-foldes, `ac` and `cas`.
 
 Take a look at the cas files by command: `file local_cache/cas/*/*`, it will shows result as
 ![](/assets/2021/cas.png)
+
+Before dive right in to see what are these, let's read more about the build process.
+
+### Xcode Build Process
+
+From [2018 WWDC - Behind The Scenes of The Xcode Build Process](https://developer.apple.com/videos/play/wwdc2018/415/), the xcode build process could roughly split into compiling, processing, linking.
+
+![](/assets/2021/tasks.png)
+
+The compiler compiles source code into Mach object file (Mach-O)
+![](/assets/2021/compiler.png)
+
+The linker links .o files together as final executable output.
+![](/assets/2021/linker.png)
+
+### Bazel cache
 
 Let's look into the json.log for more detail.
 
@@ -53,30 +69,56 @@ Let's look into the json.log for more detail.
 
 `MainViewController.swift` is compiled into `MainViewController.swift.o`, and is placed in path `cas/56/56e6bf92857ae12933140664180b6eaeec8d98dd43565b8277ec0509e4cd7005`
 
-We could use `file` command to check the type
+We could use `file` command to check the type is indeed Mach-O.
 
 ```
 cmd: file -b local_cache/cas/56/56e6bf92857ae12933140664180b6eaeec8d98dd43565b8277ec0509e4cd7005
 out: Mach-O 64-bit object x86_64
 ```
 
-### Xcode Build Process
+Also linking are shown in the log.
 
-From WWDC 2018 video, the xcode build process could roughly split into compiling, processing, linking.
+```
+{
+  "inputs": [
+    {
+      "path": "bazel-out/ios-x86_64-min10.0-applebin_ios-ios_x86_64-fastbuild-ST-7bf874b56ea0/bin/BazelDemo/libMain.a",
+      "digest": {
+        "hash": "887798d465951df90b0a55202e342a610f8dc5c787ef48597e77503bb5bb7a58",
+        "sizeBytes": "73600",
+        "hashFunctionName": "SHA-256"
+      }
+    },
+    ...
+  ],
+  "listedOutputs": [
+    "bazel-out/ios-x86_64-min10.0-applebin_ios-ios_x86_64-fastbuild-ST-7bf874b56ea0/bin/BazelDemo/BazelDemo_bin"
+  ],
+  "remotable": true,
+  "cacheable": true,
+  "progressMessage": "Linking BazelDemo/BazelDemo_bin",
+  "actualOutputs": [
+    {
+      "path": "bazel-out/ios-x86_64-min10.0-applebin_ios-ios_x86_64-fastbuild-ST-7bf874b56ea0/bin/BazelDemo/BazelDemo_bin",
+      "digest": {
+        "hash": "edc029cc3263da7a4468f693fedafdc448aa6824eb8c45535c305b5c58cfe1b4",
+        "sizeBytes": "91264",
+        "hashFunctionName": "SHA-256"
+      }
+    }
+  ],
+  "runner": "darwin-sandbox",
+  "remoteCacheHit": false,
+}
+```
 
-![](/assets/2021/tasks.png)
+The linker links compiled object into final executable output.
 
-The compiler compiles source code into Mach object file (Mach-O)
-![](/assets/2021/compiler.png)
+So theoretical speaking, since compiling and linking output are all accessible from cache at remote, the build time now depens on the downloading speed now.
 
-The linker links .o files together
-![](/assets/2021/linker.png)
+### Remote Cache vs Download Speed
 
-So theoretical speaking, since compiling and linking output are all accessible from remote cache, the build time now depens on the network speed now.
-
-### Remote Cache vs Network Speed
-
-We could do a simple math, to roughly estimate the remote cache size under different network speed.
+We could do a simple math, to roughly estimate the remote cache size under different download speed.
 Given a huge application, say the cache files are around 3GB.
 
 | Speed     | Calculation            | Download time   |
@@ -85,10 +127,8 @@ Given a huge application, say the cache files are around 3GB.
 | 30   Mbps | 3 * 1024 / (30   / 8)  | 819s    (13.65m)|
 | 50   Mbps | 3 * 1024 / (50   / 8)  | 491s    (8.192m)|
 | 100  Mbps | 3 * 1024 / (100  / 8)  | 245.76s (4m)    |
-| 1000 Mbps | 3 * 1024 / (1000 / 8)  | 24.576s (0.4m)  |
 
-
-Thus network speed has important impact on the cache strategy.
+Thus download speed has important impact on the cache strategy.
 
 https://github.com/bazelbuild/bazel/pull/7512
 > his PR adds the ability to enable disk and HTTP cache simultaneously. Specifically, if you set
