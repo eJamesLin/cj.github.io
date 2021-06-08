@@ -217,6 +217,14 @@ And if we take a look at the terminal log, the former one will have low remote c
 
 While the latter have high hit rate as: `INFO: 264 processes: 216 remote cache hit, 47 internal, 1 local.`
 
+To simulate different internet speed effect the Bazel cache, we could add access limit on Nginx. 
+
+For example, limit the max request number to 10 request per second, add the following option on config file.
+```
+limit_req_zone $binary_remote_addr zone=one:10m rate=10r/s;
+```
+Then the http request to local cache server slow down, and we could see that Bazel build slow down as well.
+
 ### Remote Cache vs Download Speed
 
 We could do a simple math, to roughly estimate the remote cache size under different download speed.
