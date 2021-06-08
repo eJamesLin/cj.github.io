@@ -53,7 +53,7 @@ The compiler compiles source code into Mach object file (Mach-O)
 The linker links .o files together as final executable output.
 ![](/assets/2021/linker.png)
 
-### Bazel cache
+### Cache and Bazel logs
 
 Let's look into the json.log for more detail.
 
