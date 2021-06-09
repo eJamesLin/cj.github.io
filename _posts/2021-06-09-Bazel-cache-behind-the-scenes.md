@@ -233,6 +233,7 @@ Given a huge application, say the sum of cache sizes is around 3GB.
 | Speed     | Calculation            | Download time   |
 | --------- | -----------------------| --------------- |
 | 10   Mbps | 3 * 1024 / (10   / 8)  | 2457s   (41m)   |
+| 20   Mbps | 3 * 1024 / (20   / 8)  | 1229s   (20.48m)|
 | 30   Mbps | 3 * 1024 / (30   / 8)  | 819s    (13.65m)|
 | 50   Mbps | 3 * 1024 / (50   / 8)  | 491s    (8.192m)|
 | 100  Mbps | 3 * 1024 / (100  / 8)  | 245.76s (4m)    |
