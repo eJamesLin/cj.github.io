@@ -53,6 +53,8 @@ The compiler compiles source code into Mach object file (Mach-O)
 The linker links .o files together as final executable output.
 ![](/assets/2021/linker.png)
 
+<!--more-->
+
 ### Cache and Bazel logs
 
 Let's look into the json.log for more detail.
@@ -230,13 +232,13 @@ Then the http request to local cache server slow down, and we could see that Baz
 We could do a simple math, to roughly estimate the remote cache size under different download speed.
 Given a huge application, say the sum of cache sizes is around 3GB.
 
-| Speed     | Calculation            | Download time   |
-| --------- | -----------------------| --------------- |
-| 10   Mbps | 3 * 1024 / (10   / 8)  | 2457s   (41m)   |
-| 20   Mbps | 3 * 1024 / (20   / 8)  | 1229s   (20.48m)|
-| 30   Mbps | 3 * 1024 / (30   / 8)  | 819s    (13.65m)|
-| 50   Mbps | 3 * 1024 / (50   / 8)  | 491s    (8.192m)|
-| 100  Mbps | 3 * 1024 / (100  / 8)  | 245.76s (4m)    |
+| Speed     | Calculation        | Download time   |
+| --------- | -------------------| --------------- |
+| 10   Mbps | 3 * 1024 * 8 / 10  | 2457s   (41m)   |
+| 20   Mbps | 3 * 1024 * 8 / 20  | 1229s   (20.48m)|
+| 30   Mbps | 3 * 1024 * 8 / 30  | 819s    (13.65m)|
+| 50   Mbps | 3 * 1024 * 8 / 50  | 491s    (8.192m)|
+| 100  Mbps | 3 * 1024 * 8 / 100 | 245.76s (4m)    |
 
 This is really a rough estimation, since the download process involves a series of GET request, the overhead will definitely takes longer time.
 
