@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "[WWDC Note] Get ready to optimize your App Store product page"
+title:  "WWDC 2021 Get ready to optimize your App Store product page"
 date:   2021-06-21 +0800
 tags:   [iOS, WWDC]
 ---
