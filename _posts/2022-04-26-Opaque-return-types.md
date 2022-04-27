@@ -181,6 +181,103 @@ struct LazyView<Content: View>: View {
 }
 ```
 
+### ViewBuilder
+前面提到 Opaque Type 限定回傳的 type 是同一種，但為何 ContentView 可以有 if-else 的寫法，回傳不同 type?
+
+```swift
+struct ContentView: View {
+    @State var isLoggedIn = false
+
+    @ViewBuilder
+    func createView() -> some View {
+        if isLoggedIn {
+            Text("Logged In")
+        }
+        else {
+            Button("Click to Login") {
+                isLoggedIn.toggle()
+            }
+        }
+    }
+
+    var body: some View {
+        let view = createView()
+
+        // print _ConditionalContent<Text, Button<Text>>
+        print(type(of: view))
+
+        return view
+    }
+}
+```
+
+從以上寫法可以觀察到，透過 `@ViewBuilder` 修飾 function 之後，回傳的 concrete type 是 `_ConditionalContent<Text, Button<Text>>`。
+
+而 View protocol 有定義 body 使用 `@ViewBuilder`，所以在 body 中可使用多行的 command，並回傳單一的 concrete type。
+
+```swift
+public protocol View {
+    /// The type of view representing the body of this view.
+    associatedtype Body : View
+
+    /// The content and behavior of the view.
+    @ViewBuilder var body: Self.Body { get }
+}
+```
+
+ViewBuilder 的定義如下
+
+```swift
+/// You typically use ``ViewBuilder`` as a parameter attribute for child
+/// view-producing closure parameters, allowing those closures to provide
+/// multiple child views. For example, the following `contextMenu` function
+/// accepts a closure that produces one or more views via the view builder.
+///
+///     func contextMenu<MenuItems: View>(
+///         @ViewBuilder menuItems: () -> MenuItems
+///     ) -> some View
+///
+/// Clients of this function can use multiple-statement closures to provide
+/// several child views, as shown in the following example:
+///
+///     myView.contextMenu {
+///         Text("Cut")
+///         Text("Copy")
+///         Text("Paste")
+///         if isSymbol {
+///             Text("Jump to Definition")
+///         }
+///     }
+///
+@resultBuilder public struct ViewBuilder {
+
+    /// Builds an empty view from a block containing no statements.
+    public static func buildBlock() -> EmptyView
+
+    /// Passes a single view written as a child view through unmodified.
+    ///
+    /// An example of a single view written as a child view is
+    /// `{ Text("Hello") }`.
+    public static func buildBlock<Content>(_ content: Content) -> Content where Content : View
+}
+
+extension ViewBuilder {
+
+    /// Provides support for “if” statements in multi-statement closures,
+    /// producing an optional view that is visible only when the condition
+    /// evaluates to `true`.
+    public static func buildIf<Content>(_ content: Content?) -> Content? where Content : View
+
+    /// Provides support for "if" statements in multi-statement closures,
+    /// producing conditional content for the "then" branch.
+    public static func buildEither<TrueContent, FalseContent>(first: TrueContent) -> _ConditionalContent<TrueContent, FalseContent> where TrueContent : View, FalseContent : View
+
+    /// Provides support for "if-else" statements in multi-statement closures,
+    /// producing conditional content for the "else" branch.
+    public static func buildEither<TrueContent, FalseContent>(second: FalseContent) -> _ConditionalContent<TrueContent, FalseContent> where TrueContent : View, FalseContent : View
+}
+```
+
 ### Reference
 - <https://docs.swift.org/swift-book/LanguageGuide/OpaqueTypes.html>
 - <https://www.swiftbysundell.com/articles/opaque-return-types-in-swift/>
